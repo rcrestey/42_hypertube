@@ -1,0 +1,19 @@
+FROM node:lts-alpine3.9 
+
+WORKDIR /api
+
+COPY . /api
+
+RUN apk add --update \
+    python \
+    python-dev \
+    py-pip \
+    build-base
+
+RUN npm install --reinstall-binaries
+
+EXPOSE 8080
+
+RUN npm run build
+ 
+ENTRYPOINT ["node", "-r", "dotenv/config", "dist/app.js"]

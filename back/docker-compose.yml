@@ -1,0 +1,50 @@
+version: '3.3'
+services:
+    database:
+        container_name: database
+        build:
+            context: .
+            dockerfile: Dockerfile-db
+        ports:
+            - '${DATABASE_PORT}:5432'
+        restart: on-failure
+        volumes:
+            - ./db/postgres.conf:/etc/postgresql.conf
+        command: 'postgres -c config_file="/etc/postgresql.conf"'
+
+    cloud:
+        container_name: cloud
+        image: minio/minio
+        ports:
+            - '${CLOUD_PORT}:9000'
+        env_file:
+            - .env
+        command: server /data
+
+    setupCloud:
+        container_name: setupCloud
+        image: minio/mc
+        depends_on:
+            - cloud
+        entrypoint: >
+            /bin/sh -c '
+                echo Waiting for minio service to start...;
+                while ! nc -z ${CLOUD_HOST} ${CLOUD_PORT};
+                do
+                    sleep 1;
+                done;
+                echo Connected!;
+                sleep 4;
+                /usr/bin/mc config host add cloud http://${CLOUD_HOST}:${CLOUD_PORT} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY} --api s3v4;
+                /usr/bin/mc mb cloud/profile-pics;
+                /usr/bin/mc policy set public cloud/profile-pics;
+                exit 0;
+            '
+    api:
+        container_name: api
+        build:
+            context: .
+            dockerfile: Dockerfile-api
+        ports:
+            - '8080:8080'
+        restart: on-failure
