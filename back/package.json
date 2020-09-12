@@ -45,7 +45,7 @@
         "fs": "0.0.1-security",
         "gmail-send": "^1.8.10",
         "minio": "^7.0.13",
-        "node-fetch": "^2.6.0",
+        "node-fetch": "^2.6.1",
         "node-stream-zip": "^1.9.1",
         "passport": "^0.4.1",
         "passport-42": "^1.2.6",
