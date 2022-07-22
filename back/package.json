@@ -39,7 +39,7 @@
         "express-validator": "^6.4.0",
         "extract-zip": "^1.6.7",
         "fetch-json": "^2.2.6",
-        "file-type": "^14.1.1",
+        "file-type": "^16.5.4",
         "find-remove": "^2.0.1",
         "fluent-ffmpeg": "^2.1.2",
         "fs": "0.0.1-security",
